@@ -24,8 +24,8 @@
             --text: #0f172a;
             --text-2: #475569;
             --text-3: #64748b;
-            --radius: 6px;
-            --radius-lg: 10px;
+            --radius: 4px;
+            --radius-lg: 6px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -98,7 +98,7 @@
         /* ═══════ Tags ═══════ */
         .tag {
             display: inline-flex; align-items: center; gap: 4px;
-            padding: 3px 10px; border-radius: 14px;
+            padding: 3px 10px; border-radius: 4px;
             font-size: 12px; font-weight: 600;
         }
         .tag-red    { background: rgba(220,38,38,0.07); color: #b91c1c; border: 1px solid rgba(220,38,38,0.16); }
@@ -170,7 +170,7 @@
         }
         .ico-wrap {
             width: 32px; height: 32px; display: flex; align-items: center;
-            justify-content: center; border-radius: 7px; flex-shrink: 0;
+            justify-content: center; border-radius: 4px; flex-shrink: 0;
         }
         .ico-blue  { background: rgba(37,99,235,0.07); color: #2563eb; }
         .ico-red   { background: rgba(220,38,38,0.07); color: #dc2626; }
@@ -362,16 +362,12 @@
     <div class="glass glass-inner" style="padding:22px 26px;">
         <div class="header-inner" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:14px;">
             <div style="flex:1;min-width:0;">
-                <h1 class="header-title" style="font-size:25px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:10px;letter-spacing:-0.01em;">
-                    <i class="fa-solid fa-scale-balanced" style="font-size:26px;width:38px;height:38px;background:linear-gradient(135deg,rgba(26,54,93,0.08),rgba(37,99,235,0.1));display:flex;align-items:center;justify-content:center;border-radius:7px;color:#2563eb;"></i>
+                <h1 class="header-title" style="font-size:25px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:10px;letter-spacing:-0.01em;white-space:nowrap;">
+                    <i class="fa-solid fa-scale-balanced" style="font-size:26px;width:38px;height:38px;background:linear-gradient(135deg,rgba(26,54,93,0.08),rgba(37,99,235,0.1));display:flex;align-items:center;justify-content:center;border-radius:5px;color:#2563eb;flex-shrink:0;"></i>
                     工伤理赔试算平衡工具
                 </h1>
-                <p class="header-desc" style="color:var(--text-2);margin-top:8px;font-size:13.5px;line-height:1.7;max-width:680px;">
-                    依据
-                    <a :href="url191" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--accent);">渝人社发〔2017〕191号</a>
-                    及
-                    <a :href="url30" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--accent);">渝人社发〔2019〕30号</a>
-                    文件设计。一次工伤理赔可能导致次年费率暴涨（最高150%），并清零长期积累的下浮优惠。本工具帮您精准测算"走社保"与"内部私了"的未来三年保费差额。
+                <p class="header-desc" style="color:var(--text-2);margin-top:8px;font-size:13.5px;line-height:1.7;max-width:640px;">
+                    依据<a :href="url191" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none;">渝人社发〔2017〕191号</a>及<a :href="url30" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none;">渝人社发〔2019〕30号</a>文件设计。一次工伤理赔可能导致次年费率暴涨（最高150%），并清零积累的下浮优惠。本工具精准测算"走社保"与"内部私了"的未来三年保费差额。
                 </p>
                 <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
                     <a :href="url191" target="_blank" rel="noopener" class="policy-link">
@@ -384,8 +380,8 @@
                     </a>
                 </div>
             </div>
-            <div class="tag tag-blue" style="padding:5px 13px;">
-                <i class="fa-solid fa-cloud"></i> 在线政策版
+            <div class="tag tag-blue" style="padding:5px 13px;white-space:nowrap;">
+                <i class="fa-solid fa-pen-nib"></i> 作者-by熊熊
             </div>
         </div>
     </div>
@@ -487,8 +483,8 @@
                         {{ currentData.recommendPrivate ? '建议企业内部解决（"私了"）' : '建议正常走工伤报销程序' }}
                     </h2>
                     <p style="margin:0;color:var(--text-2);font-size:13.5px;line-height:1.6;">
-                        本次报销 <strong style="color:var(--text);">{{ currency(safePayout) }}</strong>，
-                        未来三年将额外多缴纳保费
+                        本次可报销金额 <strong style="color:var(--text);">{{ currency(safePayout) }}</strong>，
+                        但将使未来三年额外多缴保费
                         <strong :style="{color: currentData.recommendPrivate ? '#dc2626' : 'var(--text)'}">
                             {{ currency(currentData.totalExtraPremium) }}</strong>。
                     </p>
@@ -496,12 +492,30 @@
                         <strong style="color:var(--text);">为什么会产生"多缴成本"？</strong><br/>
                         工伤理赔导致"支缴率"上升。一次报销不仅在第1年面临惩罚性费率，还会让第2、3年经历漫长的费率恢复期。
                     </div>
-                    <p v-if="currentData.recommendPrivate" style="font-size:16px;font-weight:700;color:#b91c1c;margin:9px 0 0 0;">
-                        账面直接亏损：{{ currency(currentData.totalExtraPremium - safePayout) }}
-                    </p>
-                    <p v-else style="font-size:16px;font-weight:700;color:#047857;margin:9px 0 0 0;">
-                        账面实际节省：{{ currency(safePayout - currentData.totalExtraPremium) }}
-                    </p>
+                    <div v-if="currentData.recommendPrivate" class="glass-surface" style="margin-top:9px;padding:12px 14px;font-size:13px;color:var(--text);line-height:1.9;">
+                        <div style="display:flex;justify-content:space-between;border-bottom:1px dashed rgba(203,213,225,0.5);padding-bottom:6px;margin-bottom:6px;">
+                            <span>社保报销收入</span><span style="font-weight:600;color:#059669;">+{{ currency(safePayout) }}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;border-bottom:1px dashed rgba(203,213,225,0.5);padding-bottom:6px;margin-bottom:6px;">
+                            <span>三年额外多缴保费</span><span style="font-weight:600;color:#dc2626;">-{{ currency(currentData.totalExtraPremium) }}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;padding-top:4px;">
+                            <span style="font-weight:700;">账面净亏损</span>
+                            <span style="font-weight:700;font-size:15px;color:#dc2626;">-{{ currency(currentData.totalExtraPremium - safePayout) }}</span>
+                        </div>
+                    </div>
+                    <div v-else class="glass-surface" style="margin-top:9px;padding:12px 14px;font-size:13px;color:var(--text);line-height:1.9;">
+                        <div style="display:flex;justify-content:space-between;border-bottom:1px dashed rgba(203,213,225,0.5);padding-bottom:6px;margin-bottom:6px;">
+                            <span>社保报销收入</span><span style="font-weight:600;color:#059669;">+{{ currency(safePayout) }}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;border-bottom:1px dashed rgba(203,213,225,0.5);padding-bottom:6px;margin-bottom:6px;">
+                            <span>三年额外多缴保费</span><span style="font-weight:600;color:#dc2626;">-{{ currency(currentData.totalExtraPremium) }}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;padding-top:4px;">
+                            <span style="font-weight:700;">账面净节省</span>
+                            <span style="font-weight:700;font-size:15px;color:#059669;">+{{ currency(safePayout - currentData.totalExtraPremium) }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -590,40 +604,70 @@
                     <span class="ico-wrap ico-blue"><i class="fa-solid fa-circle-info"></i></span> 工伤费率浮动政策核心机制解读
                 </div>
                 <div class="policy-cols" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+                    <!-- 一、支缴率 -->
                     <div>
                         <h4 style="font-size:14px;font-weight:700;color:var(--primary);margin:0 0 8px 0;display:flex;align-items:center;gap:7px;">
-                            <span style="display:inline-flex;width:20px;height:20px;border-radius:5px;background:rgba(37,99,235,0.08);color:var(--accent);align-items:center;justify-content:center;font-size:10px;font-weight:700;">1</span>
-                            核心指标："支缴率"
+                            <span style="display:inline-flex;width:20px;height:20px;border-radius:4px;background:rgba(37,99,235,0.08);color:var(--accent);align-items:center;justify-content:center;font-size:10px;font-weight:700;">一</span>
+                            核心考核指标："支缴率"
                         </h4>
-                        <p style="font-size:13px;color:var(--text-2);line-height:1.6;margin:0 0 8px 0;">
-                            支缴率 = <span style="background:rgba(37,99,235,0.05);padding:1px 6px;border-radius:3px;font-weight:600;color:var(--accent);">年度基金支付总额 ÷ 当年实际缴纳保费 × 100%</span>
+                        <p style="font-size:12.5px;color:var(--text-2);line-height:1.6;margin:0 0 8px 0;">
+                            支缴率是决定次年费率"上浮"或"下浮"的唯一数据：
                         </p>
-                        <div class="glass-surface" style="padding:10px 12px;font-size:12.5px;line-height:1.8;">
-                            <div><span style="color:#059669;font-weight:600;">0%</span> — 下浮优惠（80%/连续3年50%）</div>
-                            <div><span style="color:var(--text);font-weight:600;">0%~100%</span> — 执行基准费率</div>
-                            <div><span style="color:#dc2626;font-weight:600;">≥100%</span> — 上浮至 120%</div>
-                            <div><span style="color:#dc2626;font-weight:600;">≥120%</span> — 上浮至 150%</div>
+                        <p style="font-size:13px;background:rgba(37,99,235,0.04);padding:8px 10px;border-radius:4px;font-weight:600;color:var(--accent);text-align:center;margin:0 0 8px 0;">
+                            年度基金支付工伤待遇总额 ÷ 当年实际缴纳工伤保费 × 100%
+                        </p>
+                        <div class="glass-surface" style="padding:10px 12px;font-size:12px;line-height:1.9;">
+                            <div><span style="color:#059669;font-weight:600;">支缴率 0%</span> → 享受下浮优惠（根据无理赔年限分80%、50%两档）</div>
+                            <div><span style="color:var(--text);font-weight:600;">0% ＜ 支缴率 ＜ 100%</span> → 无优惠，执行基准费率（100%）</div>
+                            <div><span style="color:#dc2626;font-weight:600;">支缴率 ≥ 100%</span> → 惩罚性上浮至 120%</div>
+                            <div><span style="color:#dc2626;font-weight:600;">支缴率 ≥ 120%</span> → 顶格惩罚上浮至 150%</div>
                         </div>
-                        <p style="font-size:11px;color:var(--text-3);margin-top:5px;">* 一类行业不实行下浮，仅执行基准或上浮</p>
                     </div>
+
+                    <!-- 二、恢复期 + 红线 -->
                     <div>
                         <h4 style="font-size:14px;font-weight:700;color:var(--primary);margin:0 0 8px 0;display:flex;align-items:center;gap:7px;">
-                            <span style="display:inline-flex;width:20px;height:20px;border-radius:5px;background:rgba(220,38,38,0.07);color:#dc2626;align-items:center;justify-content:center;font-size:10px;font-weight:700;">2</span>
-                            漫长的"三年恢复期"
+                            <span style="display:inline-flex;width:20px;height:20px;border-radius:4px;background:rgba(220,38,38,0.07);color:#dc2626;align-items:center;justify-content:center;font-size:10px;font-weight:700;">二</span>
+                            漫长的"三年恢复期" + 红线规则
                         </h4>
-                        <p style="font-size:13px;color:var(--text-2);line-height:1.6;margin:0 0 8px 0;">
-                            享受最优惠的 <strong style="color:#059669;">50% 档次</strong>，企业必须<strong style="color:#dc2626;">连续三年</strong>支缴率为0。一旦理赔，无理赔记录清零。
+                        <p style="font-size:12.5px;color:var(--text-2);line-height:1.6;margin:0 0 8px 0;">
+                            享受最优惠的 <strong style="color:#059669;">50% 下浮档次</strong>，企业必须<strong style="color:#dc2626;">连续三年</strong>支缴率为0。一旦发生理赔，之前积累的"无理赔记录"全部清零。
                         </p>
-                        <div class="glass-surface" style="padding:10px 12px;font-size:12.5px;text-align:center;font-weight:600;color:var(--text);line-height:2;">
-                            第1年（基准/上浮）→ 第2年（降至80%）→ 第3年（维持80%）→ 第4年（恢复50%）
+                        <div class="glass-surface" style="padding:10px 12px;font-size:12px;text-align:center;font-weight:600;color:var(--text);line-height:2;">
+                            第1年（基准/上浮）→ 第2年（0理赔才降至80%）→ 第3年（0理赔维持80%）→ 第4年（恢复50%）
                         </div>
-                        <div class="glass-surface" style="margin-top:10px;padding:10px 12px;font-size:12px;color:var(--text-2);line-height:1.6;">
-                            <strong style="color:var(--text);">红线上浮（一票否决）：</strong>死亡2人及以上 / 列入安全生产黑名单 → 直接上浮150%
+
+                        <h4 style="font-size:14px;font-weight:700;color:var(--primary);margin:14px 0 8px 0;display:flex;align-items:center;gap:7px;">
+                            <span style="display:inline-flex;width:20px;height:20px;border-radius:4px;background:rgba(220,38,38,0.08);color:#dc2626;align-items:center;justify-content:center;font-size:10px;font-weight:700;">三</span>
+                            红线上浮（一票否决）
+                        </h4>
+                        <div class="glass-surface" style="padding:10px 12px;font-size:12px;color:var(--text-2);line-height:1.7;">
+                            无论支缴率多少，一个自然年度内发生以下情形之一，<strong style="color:#dc2626;">费率直接上浮至150%</strong>：
+                            <div style="margin-top:4px;">1. 发生生产安全死亡责任事故，死亡 <strong>2人及以上</strong></div>
+                            <div>2. 被安全生产监督管理部门列入安全生产 <strong>"黑名单"</strong></div>
                         </div>
                     </div>
                 </div>
-                <p style="font-size:11px;color:var(--text-3);margin-top:10px;text-align:right;">
-                    浮动费率每年核定一次，从每年1月起执行。最终费率保留至小数点后两位（四舍五入）。
+
+                <!-- 补充规则行 -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(226,232,240,0.4);">
+                    <div>
+                        <h4 style="font-size:13px;font-weight:700;color:var(--primary);margin:0 0 6px 0;">禁止下浮的情形</h4>
+                        <div class="glass-surface" style="padding:8px 12px;font-size:11.5px;color:var(--text-2);line-height:1.7;">
+                            ① 不按规定申报参保人数或工资总额 &nbsp; ② 未按时足额缴纳保费 / 上年度缴费不满12个月 &nbsp; ③ 骗取工伤保险待遇
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="font-size:13px;font-weight:700;color:var(--primary);margin:0 0 6px 0;">不计入支缴率的支出</h4>
+                        <div class="glass-surface" style="padding:8px 12px;font-size:11.5px;color:var(--text-2);line-height:1.7;">
+                            ① 抢险救灾等维护国家/公共利益受伤 &nbsp; ② 军队服役旧伤复发 &nbsp; ③ 已纳入统筹的老工伤人员费用
+                        </div>
+                    </div>
+                </div>
+
+                <p style="font-size:10.5px;color:var(--text-3);margin-top:12px;text-align:right;">
+                    依据：渝人社发〔2017〕191号（费率政策）· 渝人社发〔2019〕30号（浮动管理办法）&nbsp;|&nbsp; 浮动费率每年1月核定，保留至小数点后两位
                 </p>
             </div>
         </div>

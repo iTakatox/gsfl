@@ -291,9 +291,66 @@
         input[type="number"]::-webkit-outer-spin-button { opacity: 0.25; }
 
         @media (max-width: 768px) {
-            .stat-val { font-size: 21px; }
-            .modal-overlay { padding: 12px; }
-            .modal-body { max-height: 92vh; border-radius: var(--radius); }
+            /* Header */
+            .header-inner { flex-direction: column !important; }
+            .header-title { font-size: 20px !important; }
+            .header-desc { font-size: 12.5px !important; max-width: 100% !important; }
+
+            /* Main layout → single column */
+            .main-grid { grid-template-columns: 1fr !important; }
+            .left-panel { position: static !important; gap: 12px !important; }
+
+            /* Stat cards → 1 column */
+            .stats-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+            .stat-card { padding: 14px 16px !important; }
+            .stat-val { font-size: 22px !important; }
+
+            /* Policy columns → stack */
+            .policy-cols { grid-template-columns: 1fr !important; gap: 16px !important; }
+
+            /* Glass & surface padding */
+            .glass-card { padding: 16px 15px !important; }
+            .glass-inner { padding: 16px !important; }
+
+            /* Table scroll */
+            .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .tbl thead th { padding: 10px 8px !important; font-size: 10px !important; white-space: nowrap; }
+            .tbl tbody td { padding: 10px 8px !important; font-size: 12.5px !important; white-space: nowrap; }
+            .tbl tfoot td { padding: 10px 8px !important; }
+
+            /* Banner */
+            .banner-inner { flex-direction: column !important; text-align: center; }
+            .banner-inner h2 { font-size: 16px !important; }
+
+            /* Modal fullscreen */
+            .modal-overlay { padding: 0 !important; }
+            .modal-body { border-radius: 0 !important; max-height: 100vh !important; max-width: 100% !important; }
+            .modal-header { padding: 14px 16px !important; }
+            .modal-scroll { padding: 14px 16px !important; }
+            .modal-table { font-size: 11px !important; }
+            .modal-table th, .modal-table td { padding: 6px 5px !important; font-size: 10.5px !important; }
+
+            /* Input → 16px+ to prevent iOS zoom */
+            .input-g { font-size: 16px !important; padding: 12px 14px !important; }
+
+            /* Policies */
+            .policy-link { font-size: 12px !important; padding: 6px 10px !important; }
+
+            /* Tags */
+            .tag { font-size: 11px !important; }
+
+            /* Page padding */
+            #app { padding: 12px 10px 28px !important; gap: 14px !important; }
+
+            /* Section title */
+            .sec-title { font-size: 15px !important; margin-bottom: 12px !important; }
+            .ico-wrap { width: 28px !important; height: 28px !important; border-radius: 6px !important; }
+
+            /* Labels */
+            .field-label { font-size: 11px !important; }
+
+            /* Font smoothing for small text */
+            body { -webkit-text-size-adjust: 100%; }
         }
     </style>
 </head>
@@ -302,14 +359,14 @@
 <div id="app" v-cloak style="max-width:1200px;margin:0 auto;padding:22px 18px 36px;display:flex;flex-direction:column;gap:20px;">
 
     <!-- ═══════ HEADER ═══════ -->
-    <div class="glass">
-        <div style="padding:22px 26px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:14px;">
-            <div style="flex:1;min-width:260px;">
-                <h1 style="font-size:25px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:10px;letter-spacing:-0.01em;">
+    <div class="glass glass-inner" style="padding:22px 26px;">
+        <div class="header-inner" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:14px;">
+            <div style="flex:1;min-width:0;">
+                <h1 class="header-title" style="font-size:25px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:10px;letter-spacing:-0.01em;">
                     <i class="fa-solid fa-scale-balanced" style="font-size:26px;width:38px;height:38px;background:linear-gradient(135deg,rgba(26,54,93,0.08),rgba(37,99,235,0.1));display:flex;align-items:center;justify-content:center;border-radius:7px;color:#2563eb;"></i>
                     工伤理赔试算平衡工具
                 </h1>
-                <p style="color:var(--text-2);margin-top:8px;font-size:13.5px;line-height:1.7;max-width:680px;">
+                <p class="header-desc" style="color:var(--text-2);margin-top:8px;font-size:13.5px;line-height:1.7;max-width:680px;">
                     依据
                     <a :href="url191" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--accent);">渝人社发〔2017〕191号</a>
                     及
@@ -334,13 +391,13 @@
     </div>
 
     <!-- ═══════ MAIN ═══════ -->
-    <div style="display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start;">
+    <div class="main-grid" style="display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start;">
 
         <!-- ═══════ LEFT ═══════ -->
-        <div style="display:flex;flex-direction:column;gap:16px;position:sticky;top:18px;">
+        <div class="left-panel" style="display:flex;flex-direction:column;gap:16px;position:sticky;top:18px;">
 
             <!-- 企业基础参数 -->
-            <div class="glass" style="padding:20px 22px;">
+            <div class="glass glass-card" style="padding:20px 22px;">
                 <div class="sec-title">
                     <span class="ico-wrap ico-blue"><i class="fa-regular fa-building"></i></span> 企业基础参数
                 </div>
@@ -394,7 +451,7 @@
             </div>
 
             <!-- 本次事故预估 -->
-            <div class="glass" style="padding:20px 22px;">
+            <div class="glass glass-card" style="padding:20px 22px;">
                 <div class="sec-title">
                     <span class="ico-wrap ico-red"><i class="fa-solid fa-suitcase-medical"></i></span> 本次工伤事故预估
                 </div>
@@ -418,7 +475,7 @@
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
 
             <!-- Decision Banner -->
-            <div :class="['glass', currentData.recommendPrivate ? 'banner-danger' : 'banner-safe']"
+            <div :class="['glass banner-inner', currentData.recommendPrivate ? 'banner-danger' : 'banner-safe']"
                  style="padding:20px 24px;display:flex;align-items:center;gap:16px;">
                 <div style="flex-shrink:0;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;"
                      :style="currentData.recommendPrivate ? 'background:rgba(220,38,38,0.07);color:#dc2626;' : 'background:rgba(5,150,105,0.07);color:#059669;'">
@@ -449,7 +506,7 @@
             </div>
 
             <!-- Key Metrics -->
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div class="stats-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
                 <div class="stat-card">
                     <div class="stat-lbl">本年已缴保费预估</div>
                     <div class="stat-val" style="color:var(--text);">{{ currency(currentData.currentAnnualPremium) }}</div>
@@ -480,7 +537,7 @@
                     <i class="fa-solid fa-table-list" style="font-size:14px;color:#475569;"></i>
                     <span style="font-weight:700;color:var(--text);">未来三年保费推演明细</span>
                 </div>
-                <div style="overflow-x:auto;">
+                <div class="tbl-wrap" style="overflow-x:auto;">
                     <table class="tbl">
                         <thead>
                             <tr>
@@ -528,11 +585,11 @@
             </div>
 
             <!-- Policy Explanation -->
-            <div class="glass" style="padding:20px 24px;">
+            <div class="glass glass-card" style="padding:20px 24px;">
                 <div class="sec-title" style="margin-bottom:12px;">
                     <span class="ico-wrap ico-blue"><i class="fa-solid fa-circle-info"></i></span> 工伤费率浮动政策核心机制解读
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div class="policy-cols" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                     <div>
                         <h4 style="font-size:14px;font-weight:700;color:var(--primary);margin:0 0 8px 0;display:flex;align-items:center;gap:7px;">
                             <span style="display:inline-flex;width:20px;height:20px;border-radius:5px;background:rgba(37,99,235,0.08);color:var(--accent);align-items:center;justify-content:center;font-size:10px;font-weight:700;">1</span>

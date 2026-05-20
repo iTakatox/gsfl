@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工伤理赔试算平衡工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-1: #eef1f5;
+            --bg-2: #e4e9f2;
+            --bg-3: #dce3ed;
+            --glass: rgba(255,255,255,0.88);
+            --glass-subtle: rgba(255,255,255,0.78);
+            --border: rgba(203,213,225,0.55);
+            --shadow: 0 2px 12px rgba(0,0,0,0.05);
+            --shadow-lg: 0 4px 20px rgba(0,0,0,0.08);
+            --primary: #1a365d;
+            --accent: #1d4ed8;
+            --danger: #dc2626;
+            --success: #059669;
+            --text: #0f172a;
+            --text-2: #475569;
+            --text-3: #64748b;
+            --radius: 6px;
+            --radius-lg: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "FZYaoTi", "方正姚体", "STFangsong", "华文仿宋", "Microsoft YaHei", "PingFang SC", sans-serif;
+            background: linear-gradient(155deg, var(--bg-1) 0%, var(--bg-2) 40%, var(--bg-3) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0; pointer-events: none; z-index: -1;
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 10%, rgba(37,99,235,0.04) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 60% at 85% 70%, rgba(26,54,93,0.03) 0%, transparent 55%);
+        }
+
+        [v-cloak] { display: none !important; }
+
+        /* ═══════ Glass ═══════ */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(6px) saturate(110%);
+            -webkit-backdrop-filter: blur(6px) saturate(110%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+        .glass-surface {
+            background: var(--glass-subtle);
+            backdrop-filter: blur(3px) saturate(110%);
+            -webkit-backdrop-filter: blur(3px) saturate(110%);
+            border: 1px solid rgba(203,213,225,0.5);
+            border-radius: var(--radius);
+        }
+
+        /* ═══════ Input ═══════ */
+        .input-g {
+            width: 100%;
+            background: rgba(255,255,255,0.82);
+            border: 1px solid rgba(203,213,225,0.8);
+            border-radius: var(--radius);
+            padding: 10px 14px;
+            font-size: 15px;
+            color: var(--text);
+            transition: all 0.2s ease;
+            outline: none;
+            font-family: inherit;
+        }
+        .input-g:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+            background: rgba(255,255,255,0.95);
+        }
+        .input-g:hover:not(:focus) { border-color: #94a3b8; }
+        select.input-g {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        /* ═══════ Tags ═══════ */
+        .tag {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: 14px;
+            font-size: 12px; font-weight: 600;
+        }
+        .tag-red    { background: rgba(220,38,38,0.07); color: #b91c1c; border: 1px solid rgba(220,38,38,0.16); }
+        .tag-green  { background: rgba(5,150,105,0.07); color: #047857; border: 1px solid rgba(5,150,105,0.16); }
+        .tag-blue   { background: rgba(37,99,235,0.06); color: #1d4ed8; border: 1px solid rgba(37,99,235,0.14); }
+        .tag-gray   { background: rgba(100,116,139,0.05); color: #475569; border: 1px solid rgba(100,116,139,0.12); }
+
+        /* ═══════ Table ═══════ */
+        .tbl { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+        .tbl thead th {
+            background: rgba(248,250,252,0.85);
+            position: sticky; top: 0;
+            font-weight: 600; color: var(--text-2); text-transform: uppercase;
+            letter-spacing: 0.04em; font-size: 11.5px;
+            padding: 12px 15px; border-bottom: 1px solid rgba(203,213,225,0.5);
+        }
+        .tbl tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(241,245,249,0.5);
+            vertical-align: middle;
+        }
+        .tbl tbody tr { transition: background 0.18s ease; }
+        .tbl tbody tr:hover { background: rgba(248,250,252,0.45); }
+        .tbl tfoot td {
+            padding: 14px 15px; font-weight: 600;
+            background: rgba(248,250,252,0.65);
+            border-top: 2px solid rgba(203,213,225,0.5);
+        }
+
+        /* ═══════ Stat Card ═══════ */
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: blur(5px) saturate(110%);
+            -webkit-backdrop-filter: blur(5px) saturate(110%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .stat-val {
+            font-size: 25px; font-weight: 700; letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+        }
+        .stat-lbl {
+            font-size: 12px; color: var(--text-2); font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;
+        }
+
+        /* ═══════ Banner ═══════ */
+        .banner-danger {
+            background: rgba(220,38,38,0.04);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(220,38,38,0.14);
+            border-left: 4px solid var(--danger);
+        }
+        .banner-safe {
+            background: rgba(5,150,105,0.04);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(5,150,105,0.14);
+            border-left: 4px solid var(--success);
+        }
+
+        /* ═══════ Section Title ═══════ */
+        .sec-title {
+            font-size: 16px; font-weight: 700; color: var(--text);
+            display: flex; align-items: center; gap: 9px;
+            margin-bottom: 16px; padding-bottom: 12px;
+            border-bottom: 1px solid rgba(226,232,240,0.45);
+        }
+        .ico-wrap {
+            width: 32px; height: 32px; display: flex; align-items: center;
+            justify-content: center; border-radius: 7px; flex-shrink: 0;
+        }
+        .ico-blue  { background: rgba(37,99,235,0.07); color: #2563eb; }
+        .ico-red   { background: rgba(220,38,38,0.07); color: #dc2626; }
+        .ico-gray  { background: rgba(100,116,139,0.05); color: #475569; }
+
+        /* ═══════ Policy Link ═══════ */
+        .policy-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid rgba(203,213,225,0.5);
+            border-radius: var(--radius);
+            padding: 7px 13px;
+            font-size: 13px; font-weight: 500;
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .policy-link:hover {
+            background: rgba(255,255,255,0.8);
+            border-color: var(--accent);
+            box-shadow: 0 2px 10px rgba(37,99,235,0.1);
+        }
+
+        /* ═══════ Magnifier button ═══════ */
+        .btn-magnifier {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.78);
+            border: 1px solid rgba(203,213,225,0.65);
+            border-radius: var(--radius);
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .btn-magnifier:hover {
+            background: rgba(255,255,255,0.85);
+            border-color: var(--accent);
+            box-shadow: 0 2px 12px rgba(37,99,235,0.15);
+        }
+
+        /* ═══════ Modal Overlay ═══════ */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(15,23,42,0.5);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 30px;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-body {
+            background: rgba(255,255,255,0.93);
+            backdrop-filter: blur(8px) saturate(120%);
+            -webkit-backdrop-filter: blur(8px) saturate(120%);
+            border: 1px solid rgba(203,213,225,0.5);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+            max-width: 900px; width: 100%; max-height: 85vh;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(226,232,240,0.5);
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px;
+        }
+        .modal-scroll {
+            overflow-y: auto; padding: 20px 24px; flex: 1;
+        }
+        .modal-table {
+            width: 100%; border-collapse: collapse; font-size: 13px;
+        }
+        .modal-table th {
+            background: rgba(37,99,235,0.04);
+            padding: 10px 12px; font-weight: 600; color: var(--text-2);
+            border: 1px solid rgba(203,213,225,0.4); text-align: center;
+            font-size: 12px;
+        }
+        .modal-table td {
+            padding: 9px 12px; border: 1px solid rgba(226,232,240,0.35);
+            vertical-align: middle;
+        }
+        .modal-table tbody tr {
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .modal-table tbody tr:hover {
+            background: rgba(37,99,235,0.05);
+        }
+        .modal-table tbody tr.selected {
+            background: rgba(37,99,235,0.08);
+            border: 2px solid var(--accent);
+            outline: 2px solid var(--accent);
+            outline-offset: -2px;
+        }
+        .modal-table tbody tr.selected td {
+            font-weight: 600;
+        }
+
+        /* ═══════ Checkbox ═══════ */
+        .chk-glass { width: 18px; height: 18px; accent-color: var(--danger); cursor: pointer; border-radius: 3px; }
+
+        /* ═══════ Scrollbar ═══════ */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.25); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,0.45); }
+
+        /* ═══════ Number input ═══════ */
+        input[type="number"] { -moz-appearance: textfield; }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { opacity: 0.25; }
+
+        @media (max-width: 768px) {
+            .stat-val { font-size: 21px; }
+            .modal-overlay { padding: 12px; }
+            .modal-body { max-height: 92vh; border-radius: var(--radius); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" v-cloak style="max-width:1200px;margin:0 auto;padding:22px 18px 36px;display:flex;flex-direction:column;gap:20px;">
+
+    <!-- ═══════ HEADER ═══════ -->
+    <div class="glass">
+        <div style="padding:22px 26px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:14px;">
+            <div style="flex:1;min-width:260px;">
+                <h1 style="font-size:25px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:10px;letter-spacing:-0.01em;">
+                    <i class="fa-solid fa-scale-balanced" style="font-size:26px;width:38px;height:38px;background:linear-gradient(135deg,rgba(26,54,93,0.08),rgba(37,99,235,0.1));display:flex;align-items:center;justify-content:center;border-radius:7px;color:#2563eb;"></i>
+                    工伤理赔试算平衡工具
+                </h1>
+                <p style="color:var(--text-2);margin-top:8px;font-size:13.5px;line-height:1.7;max-width:680px;">
+                    依据
+                    <a :href="url191" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--accent);">渝人社发〔2017〕191号</a>
+                    及
+                    <a :href="url30" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--accent);">渝人社发〔2019〕30号</a>
+                    文件设计。一次工伤理赔可能导致次年费率暴涨（最高150%），并清零长期积累的下浮优惠。本工具帮您精准测算"走社保"与"内部私了"的未来三年保费差额。
+                </p>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                    <a :href="url191" target="_blank" rel="noopener" class="policy-link">
+                        <i class="fa-solid fa-file-lines" style="font-size:12px;"></i> 191号文·费率政策
+                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9px;opacity:0.6;"></i>
+                    </a>
+                    <a :href="url30" target="_blank" rel="noopener" class="policy-link">
+                        <i class="fa-solid fa-file-lines" style="font-size:12px;"></i> 30号文·浮动管理办法
+                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9px;opacity:0.6;"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="tag tag-blue" style="padding:5px 13px;">
+                <i class="fa-solid fa-cloud"></i> 在线政策版
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════ MAIN ═══════ -->
+    <div style="display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start;">
+
+        <!-- ═══════ LEFT ═══════ -->
+        <div style="display:flex;flex-direction:column;gap:16px;position:sticky;top:18px;">
+
+            <!-- 企业基础参数 -->
+            <div class="glass" style="padding:20px 22px;">
+                <div class="sec-title">
+                    <span class="ico-wrap ico-blue"><i class="fa-regular fa-building"></i></span> 企业基础参数
+                </div>
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <!-- 行业类别 + 放大镜 -->
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em;">行业工伤风险类别</label>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <select v-model.number="industryClass" class="input-g" style="flex:1;">
+                                <option v-for="ind in industryRates" :key="ind.class" :value="ind.class">
+                                    {{ ind.className }}（基准 {{ pct(ind.rate) }}）
+                                </option>
+                            </select>
+                            <button class="btn-magnifier" @click="showModal = true" title="查看完整行业分类对照表">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 缴费基数 -->
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em;">缴费基数总额（万元/月）</label>
+                        <input type="number" v-model.number="payroll" placeholder="请输入单月总额" class="input-g" style="font-size:17px;font-weight:600;" />
+                        <div class="glass-surface" style="margin-top:7px;padding:8px 12px;font-size:12.5px;color:var(--text-2);display:flex;align-items:center;gap:6px;">
+                            <i class="fa-solid fa-circle-info" style="color:var(--accent);font-size:12px;"></i>
+                            年度基数：<span style="font-weight:700;color:var(--text);">{{ annualPayroll }}</span> 万
+                        </div>
+                    </div>
+
+                    <!-- 历史状态 -->
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em;">当前费率浮动状态</label>
+                        <select v-model="historyStatus" class="input-g">
+                            <template v-if="isClass1">
+                                <option value="c1_base">维持基准费率（100% 档次）</option>
+                                <option value="c1_120">处于上浮期（120% 档次）</option>
+                                <option value="c1_150">处于顶格上浮期（150% 档次）</option>
+                            </template>
+                            <template v-else>
+                                <option value="3plus">连续 3 年无理赔（下浮至 50%）</option>
+                                <option value="2">连续 2 年无理赔（下浮至 80%，明年降至50%）</option>
+                                <option value="1">连续 1 年无理赔（下浮至 80%）</option>
+                                <option value="0_100">去年有理赔，当前费率基准档（100%）</option>
+                                <option value="0_120">去年理赔多，当前上浮期（120%）</option>
+                                <option value="0_150">去年理赔极多，当前顶格上浮（150%）</option>
+                            </template>
+                        </select>
+                        <p style="font-size:11.5px;color:var(--text-3);margin-top:4px;">以此状态为起点，推演未来三年"零理赔"自然下降的基准保费</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 本次事故预估 -->
+            <div class="glass" style="padding:20px 22px;">
+                <div class="sec-title">
+                    <span class="ico-wrap ico-red"><i class="fa-solid fa-suitcase-medical"></i></span> 本次工伤事故预估
+                </div>
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em;">预估社保可报销总额（万元）</label>
+                        <input type="number" v-model.number="payout" class="input-g" style="font-size:20px;font-weight:700;color:#dc2626;" />
+                    </div>
+                    <label class="glass-surface" style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;cursor:pointer;">
+                        <input type="checkbox" v-model="isRedline" class="chk-glass" style="flex-shrink:0;margin-top:2px;" />
+                        <div>
+                            <span style="display:block;font-weight:600;color:var(--text);font-size:13.5px;margin-bottom:2px;">触犯"一票否决"红线</span>
+                            <span style="font-size:11.5px;color:var(--text-3);">涉及死亡2人及以上，或被列入安全生产黑名单。次年费率强制上浮至150%。</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════ RIGHT ═══════ -->
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
+
+            <!-- Decision Banner -->
+            <div :class="['glass', currentData.recommendPrivate ? 'banner-danger' : 'banner-safe']"
+                 style="padding:20px 24px;display:flex;align-items:center;gap:16px;">
+                <div style="flex-shrink:0;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;"
+                     :style="currentData.recommendPrivate ? 'background:rgba(220,38,38,0.07);color:#dc2626;' : 'background:rgba(5,150,105,0.07);color:#059669;'">
+                    <i v-if="currentData.recommendPrivate" class="fa-solid fa-triangle-exclamation"></i>
+                    <i v-else class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <h2 :style="{fontSize:'18px',fontWeight:700,margin:'0 0 4px 0',color: currentData.recommendPrivate ? '#b91c1c' : '#047857'}">
+                        {{ currentData.recommendPrivate ? '建议企业内部解决（"私了"）' : '建议正常走工伤报销程序' }}
+                    </h2>
+                    <p style="margin:0;color:var(--text-2);font-size:13.5px;line-height:1.6;">
+                        本次报销 <strong style="color:var(--text);">{{ currency(safePayout) }}</strong>，
+                        未来三年将额外多缴纳保费
+                        <strong :style="{color: currentData.recommendPrivate ? '#dc2626' : 'var(--text)'}">
+                            {{ currency(currentData.totalExtraPremium) }}</strong>。
+                    </p>
+                    <div class="glass-surface" style="margin-top:9px;padding:10px 13px;font-size:12.5px;color:var(--text-2);line-height:1.6;">
+                        <strong style="color:var(--text);">为什么会产生"多缴成本"？</strong><br/>
+                        工伤理赔导致"支缴率"上升。一次报销不仅在第1年面临惩罚性费率，还会让第2、3年经历漫长的费率恢复期。
+                    </div>
+                    <p v-if="currentData.recommendPrivate" style="font-size:16px;font-weight:700;color:#b91c1c;margin:9px 0 0 0;">
+                        账面直接亏损：{{ currency(currentData.totalExtraPremium - safePayout) }}
+                    </p>
+                    <p v-else style="font-size:16px;font-weight:700;color:#047857;margin:9px 0 0 0;">
+                        账面实际节省：{{ currency(safePayout - currentData.totalExtraPremium) }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                <div class="stat-card">
+                    <div class="stat-lbl">本年已缴保费预估</div>
+                    <div class="stat-val" style="color:var(--text);">{{ currency(currentData.currentAnnualPremium) }}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:11px;">
+                        <span style="color:var(--text-3);">基准 {{ pct(baseRate) }}</span>
+                        <span class="tag tag-gray">当前档 {{ pct(currentData.currentTier) }}</span>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-top:3px solid var(--accent);">
+                    <div class="stat-lbl">推高支缴率至</div>
+                    <div class="stat-val" :style="{color: currentData.zhiJiaoLv >= 1 ? '#dc2626' : '#2563eb'}">{{ pct(currentData.zhiJiaoLv) }}</div>
+                    <div style="margin-top:7px;font-size:11px;color:var(--text-3);">报销额 ÷ 已缴保费</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-lbl">三年后财务净变化</div>
+                    <div class="stat-val" :style="{color: currentData.recommendPrivate ? '#dc2626' : '#059669',display:'flex',alignItems:'center',gap:'4px'}">
+                        <i v-if="currentData.recommendPrivate" class="fa-solid fa-arrow-trend-down" style="font-size:16px;"></i>
+                        <i v-else class="fa-solid fa-arrow-trend-up" style="font-size:16px;"></i>
+                        {{ currentData.recommendPrivate ? `-${currency(currentData.totalExtraPremium - safePayout)}` : `+${currency(safePayout - currentData.totalExtraPremium)}` }}
+                    </div>
+                    <div style="margin-top:7px;font-size:11px;color:var(--text-3);">报销收入 − 额外保费</div>
+                </div>
+            </div>
+
+            <!-- Projection Table -->
+            <div class="glass" style="overflow:hidden;">
+                <div style="padding:14px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(226,232,240,0.35);">
+                    <i class="fa-solid fa-table-list" style="font-size:14px;color:#475569;"></i>
+                    <span style="font-weight:700;color:var(--text);">未来三年保费推演明细</span>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="tbl">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">年份</th>
+                                <th><i class="fa-solid fa-shield-halved" style="color:#059669;margin-right:4px;"></i>如果选择私了</th>
+                                <th><i class="fa-solid fa-file-circle-exclamation" style="color:#dc2626;margin-right:4px;"></i>如果走工伤报销</th>
+                                <th style="text-align:right;width:110px;">多缴成本</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(p, idx) in currentData.projections" :key="idx">
+                                <td>
+                                    <span style="font-weight:600;">第 {{ p.year }} 年</span>
+                                    <span style="display:block;font-size:11px;color:var(--text-3);">{{ idx === 0 ? '(次年)' : '' }}</span>
+                                </td>
+                                <td>
+                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                                        <span :class="tagClass(p.noClaimTier)">{{ pct(p.noClaimTier) }} 档</span>
+                                        <span style="font-weight:600;font-size:15px;">{{ currency(p.noClaimPremium) }}</span>
+                                    </div>
+                                    <div style="font-size:11px;color:var(--text-3);">{{ p.noClaimReason }}</div>
+                                </td>
+                                <td>
+                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                                        <span :class="tagClass(p.claimTier)">{{ pct(p.claimTier) }} 档</span>
+                                        <span style="font-weight:600;font-size:15px;">{{ currency(p.claimPremium) }}</span>
+                                    </div>
+                                    <div :style="{fontSize:'11px',color: p.claimTier > 1 ? '#dc2626' : 'var(--text-3)'}">{{ p.claimReason }}</div>
+                                </td>
+                                <td style="text-align:right;">
+                                    <span :style="{fontWeight:700,fontSize:'15px',color: p.diff > 0 ? '#dc2626' : 'var(--text-3)'}">
+                                        {{ p.diff > 0 ? '+' : '' }}{{ p.diff === 0 ? '-' : currency(p.diff) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" style="text-align:right;color:var(--text-2);">三年累计额外缴纳保费总额：</td>
+                                <td style="text-align:right;"><span style="font-size:18px;font-weight:700;color:#dc2626;">{{ currency(currentData.totalExtraPremium) }}</span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Policy Explanation -->
+            <div class="glass" style="padding:20px 24px;">
+                <div class="sec-title" style="margin-bottom:12px;">
+                    <span class="ico-wrap ico-blue"><i class="fa-solid fa-circle-info"></i></span> 工伤费率浮动政策核心机制解读
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                    <div>
+                        <h4 style="font-size:14px;font-weight:700;color:var(--primary);margin:0 0 8px 0;display:flex;align-items:center;gap:7px;">
+                            <span style="display:inline-flex;width:20px;height:20px;border-radius:5px;background:rgba(37,99,235,0.08);color:var(--accent);align-items:center;justify-content:center;font-size:10px;font-weight:700;">1</span>
+                            核心指标："支缴率"
+                        </h4>
+                        <p style="font-size:13px;color:var(--text-2);line-height:1.6;margin:0 0 8px 0;">
+                            支缴率 = <span style="background:rgba(37,99,235,0.05);padding:1px 6px;border-radius:3px;font-weight:600;color:var(--accent);">年度基金支付总额 ÷ 当年实际缴纳保费 × 100%</span>
+                        </p>
+                        <div class="glass-surface" style="padding:10px 12px;font-size:12.5px;line-height:1.8;">
+                            <div><span style="color:#059669;font-weight:600;">0%</span> — 下浮优惠（80%/连续3年50%）</div>
+                            <div><span style="color:var(--text);font-weight:600;">0%~100%</span> — 执行基准费率</div>
+                            <div><span style="color:#dc2626;font-weight:600;">≥100%</span> — 上浮至 120%</div>
+                            <div><span style="color:#dc2626;font-weight:600;">≥120%</span> — 上浮至 150%</div>
+                        </div>
+                        <p style="font-size:11px;color:var(--text-3);margin-top:5px;">* 一类行业不实行下浮，仅执行基准或上浮</p>
+                    </div>
+                    <div>
+                        <h4 style="font-size:14px;font-weight:700;color:var(--primary);margin:0 0 8px 0;display:flex;align-items:center;gap:7px;">
+                            <span style="display:inline-flex;width:20px;height:20px;border-radius:5px;background:rgba(220,38,38,0.07);color:#dc2626;align-items:center;justify-content:center;font-size:10px;font-weight:700;">2</span>
+                            漫长的"三年恢复期"
+                        </h4>
+                        <p style="font-size:13px;color:var(--text-2);line-height:1.6;margin:0 0 8px 0;">
+                            享受最优惠的 <strong style="color:#059669;">50% 档次</strong>，企业必须<strong style="color:#dc2626;">连续三年</strong>支缴率为0。一旦理赔，无理赔记录清零。
+                        </p>
+                        <div class="glass-surface" style="padding:10px 12px;font-size:12.5px;text-align:center;font-weight:600;color:var(--text);line-height:2;">
+                            第1年（基准/上浮）→ 第2年（降至80%）→ 第3年（维持80%）→ 第4年（恢复50%）
+                        </div>
+                        <div class="glass-surface" style="margin-top:10px;padding:10px 12px;font-size:12px;color:var(--text-2);line-height:1.6;">
+                            <strong style="color:var(--text);">红线上浮（一票否决）：</strong>死亡2人及以上 / 列入安全生产黑名单 → 直接上浮150%
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size:11px;color:var(--text-3);margin-top:10px;text-align:right;">
+                    浮动费率每年核定一次，从每年1月起执行。最终费率保留至小数点后两位（四舍五入）。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ MODAL: Industry Classification ═══════════════ -->
+    <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
+        <div class="modal-body">
+            <div class="modal-header">
+                <h3 style="font-size:17px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:8px;">
+                    <i class="fa-solid fa-sitemap" style="color:var(--accent);"></i>
+                    行业工伤风险类别对照表
+                </h3>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="tag tag-gray" style="font-size:10px;">渝人社发〔2017〕191号 附件</span>
+                    <a :href="url191" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:3px;">
+                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9px;"></i> 查看原文
+                    </a>
+                    <button @click="showModal = false" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-3);padding:4px 8px;border-radius:4px;transition:all 0.15s;"
+                            onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='none'">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-scroll">
+                <p style="font-size:12.5px;color:var(--text-2);margin-bottom:14px;">
+                    <i class="fa-solid fa-hand-pointer" style="color:var(--accent);margin-right:4px;"></i>
+                    点击表格中的任意一行即可选中该行业类别，已选中的行会高亮显示。
+                </p>
+                <table class="modal-table">
+                    <thead>
+                        <tr>
+                            <th style="width:60px;">类别</th>
+                            <th style="width:80px;">基准费率</th>
+                            <th>包含行业名称</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="ind in industryRates" :key="ind.class"
+                            :class="{ selected: industryClass === ind.class }"
+                            @click="industryClass = ind.class; showModal = false;">
+                            <td style="text-align:center;font-weight:700;">{{ ind.className }}</td>
+                            <td style="text-align:center;font-weight:700;color:var(--accent);">{{ pct(ind.rate) }}</td>
+                            <td style="font-size:12.5px;line-height:1.65;">{{ ind.fullList }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 浮动规则速查 -->
+                <div style="margin-top:20px;">
+                    <h4 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                        <i class="fa-solid fa-arrow-right-arrow-left" style="color:var(--accent);font-size:13px;"></i> 费率浮动规则速查（二至八类）
+                    </h4>
+                    <table class="modal-table">
+                        <thead>
+                            <tr>
+                                <th>浮动档次</th>
+                                <th>费率</th>
+                                <th>条件</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="cursor:default;background:rgba(5,150,105,0.03);">
+                                <td style="font-weight:600;">下浮第二档</td>
+                                <td style="color:#059669;font-weight:700;">基准 × 50%</td>
+                                <td>连续3年支缴率为0</td>
+                            </tr>
+                            <tr style="cursor:default;">
+                                <td style="font-weight:600;">下浮第一档</td>
+                                <td style="color:#059669;font-weight:700;">基准 × 80%</td>
+                                <td>上年度支缴率为0</td>
+                            </tr>
+                            <tr style="cursor:default;">
+                                <td style="font-weight:600;">基准档</td>
+                                <td>基准费率</td>
+                                <td>0 &lt; 支缴率 &lt; 100%</td>
+                            </tr>
+                            <tr style="cursor:default;background:rgba(220,38,38,0.02);">
+                                <td style="font-weight:600;">上浮第一档</td>
+                                <td style="color:#dc2626;font-weight:700;">基准 × 120%</td>
+                                <td>100% ≤ 支缴率 &lt; 120%</td>
+                            </tr>
+                            <tr style="cursor:default;background:rgba(220,38,38,0.04);">
+                                <td style="font-weight:600;">上浮第二档</td>
+                                <td style="color:#dc2626;font-weight:700;">基准 × 150%</td>
+                                <td>支缴率 ≥ 120%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const { createApp, ref, computed, watch } = Vue;
+
+createApp({
+    setup() {
+        const payroll = ref(1000);
+        const industryClass = ref(4);
+        const historyStatus = ref('3plus');
+        const payout = ref(2);
+        const isRedline = ref(false);
+        const showModal = ref(false);
+
+        const url191 = 'https://rlsbj.cq.gov.cn/zwgk_182/zfxxgkml/zcwj_145360/jfxzgfxwj/201710/t20171027_6926034.html';
+        const url30  = 'https://rlsbj.cq.gov.cn/zwgk_182/zcjd/shbz/202003/t20200310_6696314.html';
+
+        const industryRates = [
+            { class: 1, rate: 0.003, className: '一类',
+              fullList: '软件和信息技术服务业，货币金融服务，资本市场服务，保险业，其他金融业，科技推广和应用服务业，社会工作，广播/电视/电影和影视录音制作业，中国共产党机关，国家机构，人民政协/民主党派，社会保障，群众团体/社会团体和其他成员组织，基层群众自治组织，国际组织' },
+            { class: 2, rate: 0.006, className: '二类',
+              fullList: '批发业，零售业，仓储业，邮政业，住宿业，餐饮业，电信/广播电视和卫星传输服务，互联网和相关服务，房地产业，租赁业，商务服务业，研究和试验发展，专业技术服务业，居民服务业，其他服务业，教育，卫生，新闻和出版业，文化艺术业' },
+            { class: 3, rate: 0.009, className: '三类',
+              fullList: '农副食品加工业，食品制造业，酒/饮料和精制茶制造业，烟草制品业，纺织业，木材加工和木/竹/藤/棕/草制品业，文教/工美/体育和娱乐用品制造业，计算机/通信和其他电子设备制造业，仪器仪表制造业，其他制造业，水的生产和供应业，机动车/电子产品和日用产品修理业，水利管理业，生态保护和环境治理业，公共设施管理业，娱乐业' },
+            { class: 4, rate: 0.011, className: '四类',
+              fullList: '农业，畜牧业，农/林/牧/渔服务业，纺织服装/服饰业，皮革/毛皮/羽毛及其制品和制鞋业，印刷和记录媒介复制业，医药制造业，化学纤维制造业，橡胶和塑料制品业，金属制品业，通用设备制造业，专用设备制造业，汽车制造业，铁路/船舶/航空航天和其他运输设备制造业，电气机械和器材制造业，废弃资源综合利用业，金属制品/机械和设备修理业，电力/热力生产和供应业，燃气生产和供应业，铁路运输业，航空运输业，管道运输业，体育' },
+            { class: 5, rate: 0.013, className: '五类',
+              fullList: '林业，开采辅助活动，家具制造业，造纸和纸制品业，建筑安装业，建筑装饰和其他建筑业，道路运输业，水上运输业，装卸搬运和运输代理业' },
+            { class: 6, rate: 0.016, className: '六类',
+              fullList: '渔业，化学原料和化学制品制造业，非金属矿物制品业，黑色金属冶炼和压延加工业，有色金属冶炼和压延加工业，房屋建筑业，土木工程建筑业' },
+            { class: 7, rate: 0.019, className: '七类',
+              fullList: '石油和天然气开采业，其他采矿业，石油加工/炼焦和核燃料加工业' },
+            { class: 8, rate: 0.022, className: '八类',
+              fullList: '煤炭开采和洗选业，黑色金属矿采选业，有色金属矿采选业，非金属矿采选业' },
+        ];
+
+        watch([industryClass, historyStatus], ([newClass, newStatus]) => {
+            if (newClass === 1 && !newStatus.startsWith('c1_')) historyStatus.value = 'c1_base';
+            else if (newClass !== 1 && newStatus.startsWith('c1_')) historyStatus.value = '3plus';
+        });
+
+        const safePayroll = computed(() => Number(payroll.value) || 0);
+        const safePayout = computed(() => Number(payout.value) || 0);
+        const isClass1 = computed(() => industryClass.value === 1);
+        const baseRate = computed(() => industryRates[industryClass.value - 1].rate);
+        const annualPayroll = computed(() => safePayroll.value * 12);
+
+        const currentData = computed(() => {
+            let currentTier = 1.0;
+            let noClaimTimeline = [1.0, 1.0, 1.0];
+            let noClaimReasons = ["", "", ""];
+
+            if (isClass1.value) {
+                if (historyStatus.value === 'c1_base') { currentTier = 1.0; noClaimTimeline = [1.0, 1.0, 1.0]; noClaimReasons = ["维持基准", "维持基准", "维持基准"]; }
+                else if (historyStatus.value === 'c1_120') { currentTier = 1.2; noClaimTimeline = [1.0, 1.0, 1.0]; noClaimReasons = ["恢复基准", "维持基准", "维持基准"]; }
+                else if (historyStatus.value === 'c1_150') { currentTier = 1.5; noClaimTimeline = [1.0, 1.0, 1.0]; noClaimReasons = ["恢复基准", "维持基准", "维持基准"]; }
+            } else {
+                if (historyStatus.value === '3plus') { currentTier = 0.5; noClaimTimeline = [0.5, 0.5, 0.5]; noClaimReasons = ["连续3年无理赔", "连续4年无理赔", "连续5年无理赔"]; }
+                else if (historyStatus.value === '2') { currentTier = 0.8; noClaimTimeline = [0.5, 0.5, 0.5]; noClaimReasons = ["满3年降至二档", "连续4年无理赔", "连续5年无理赔"]; }
+                else if (historyStatus.value === '1') { currentTier = 0.8; noClaimTimeline = [0.8, 0.5, 0.5]; noClaimReasons = ["满2年维持一档", "满3年降至二档", "连续4年无理赔"]; }
+                else if (historyStatus.value === '0_100') { currentTier = 1.0; noClaimTimeline = [0.8, 0.8, 0.5]; noClaimReasons = ["满1年下浮一档", "满2年维持一档", "满3年降至二档"]; }
+                else if (historyStatus.value === '0_120') { currentTier = 1.2; noClaimTimeline = [0.8, 0.8, 0.5]; noClaimReasons = ["满1年下浮一档", "满2年维持一档", "满3年降至二档"]; }
+                else if (historyStatus.value === '0_150') { currentTier = 1.5; noClaimTimeline = [0.8, 0.8, 0.5]; noClaimReasons = ["满1年下浮一档", "满2年维持一档", "满3年降至二档"]; }
+            }
+
+            const currentAnnualPremium = annualPayroll.value * baseRate.value * currentTier;
+            const zhiJiaoLv = currentAnnualPremium > 0 ? (safePayout.value / currentAnnualPremium) : 0;
+
+            let claimY1Tier = 1.0, claimY1Reason = "";
+            if (isRedline.value) { claimY1Tier = 1.5; claimY1Reason = "触碰红线强制上浮"; }
+            else if (zhiJiaoLv >= 1.2) { claimY1Tier = 1.5; claimY1Reason = "支缴率≥120%上浮二档"; }
+            else if (zhiJiaoLv >= 1.0) { claimY1Tier = 1.2; claimY1Reason = "支缴率≥100%上浮一档"; }
+            else { claimY1Tier = 1.0; claimY1Reason = "支缴率<100%执行基准"; }
+
+            const claimY2Tier = isClass1.value ? 1.0 : 0.8;
+            const claimY2Reason = isClass1.value ? "一类行业不下浮" : "无新理赔下浮一档";
+            const claimY3Tier = isClass1.value ? 1.0 : 0.8;
+            const claimY3Reason = isClass1.value ? "一类行业不下浮" : "满2年维持下浮一档";
+
+            const claimTimeline = [claimY1Tier, claimY2Tier, claimY3Tier];
+            const claimReasons = [claimY1Reason, claimY2Reason, claimY3Reason];
+            const calc = (t) => annualPayroll.value * baseRate.value * t;
+
+            const projections = [0, 1, 2].map(i => {
+                const cp = calc(claimTimeline[i]), np = calc(noClaimTimeline[i]);
+                return {
+                    year: i + 1, claimTier: claimTimeline[i], noClaimTier: noClaimTimeline[i],
+                    claimReason: claimReasons[i], noClaimReason: noClaimReasons[i],
+                    claimPremium: cp, noClaimPremium: np, diff: cp - np
+                };
+            });
+
+            const te = projections.reduce((s, p) => s + p.diff, 0);
+            return {
+                currentTier, currentAnnualPremium, zhiJiaoLv,
+                projections, totalExtraPremium: te, recommendPrivate: te > safePayout.value
+            };
+        });
+
+        const pct = (v) => (v * 100).toFixed(2) + '%';
+        const currency = (v) => v.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' 万';
+        const tagClass = (t) => t > 1 ? 'tag tag-red' : t < 1 ? 'tag tag-green' : 'tag tag-gray';
+
+        return {
+            payroll, industryClass, historyStatus, payout, isRedline, showModal,
+            industryRates, url191, url30,
+            isClass1, baseRate, annualPayroll, safePayout,
+            currentData, pct, currency, tagClass
+        };
+    }
+}).mount('#app');
+</script>
+</body>
+</html>

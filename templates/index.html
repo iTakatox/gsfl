@@ -352,6 +352,581 @@
             /* Font smoothing for small text */
             body { -webkit-text-size-adjust: 100%; }
         }
+
+        /* ═══════ Premium visual refresh ═══════ */
+        :root {
+            --bg-1: #071120;
+            --bg-2: #0c1b30;
+            --bg-3: #f3f6fa;
+            --glass: rgba(255,255,255,0.92);
+            --glass-subtle: rgba(248,250,252,0.82);
+            --border: rgba(185,198,216,0.46);
+            --shadow: 0 18px 44px rgba(10,24,48,0.12);
+            --shadow-lg: 0 28px 70px rgba(5,12,24,0.22);
+            --primary: #10213b;
+            --accent: #1f6feb;
+            --gold: #c99328;
+            --danger: #d92d20;
+            --success: #0f8f68;
+            --text: #111827;
+            --text-2: #526174;
+            --text-3: #7a8698;
+            --radius: 8px;
+            --radius-lg: 8px;
+        }
+
+        body {
+            font-family: "Inter", "Segoe UI", "Microsoft YaHei", "PingFang SC", Arial, sans-serif !important;
+            background:
+                linear-gradient(180deg, rgba(5,12,24,0.28) 0%, rgba(7,17,32,0.14) 34%, rgba(239,244,250,0.9) 78%),
+                url('/static/premium-bg.png') center top / cover no-repeat fixed,
+                linear-gradient(155deg, #071120 0%, #132942 46%, #eef3f8 100%) !important;
+            letter-spacing: 0 !important;
+        }
+
+        body::before {
+            background:
+                linear-gradient(90deg, rgba(201,147,40,0.14) 0 1px, transparent 1px 140px),
+                linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 120px) !important;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.65), transparent 72%);
+            opacity: 0.95;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: auto 0 0 0;
+            height: 44vh;
+            pointer-events: none;
+            z-index: -1;
+            background: linear-gradient(180deg, transparent, rgba(244,248,252,0.98) 62%);
+        }
+
+        #app {
+            max-width: 1320px !important;
+            padding: 32px 24px 48px !important;
+            gap: 24px !important;
+        }
+
+        .glass {
+            background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,250,253,0.88)) !important;
+            border: 1px solid rgba(214,222,233,0.72) !important;
+            box-shadow: var(--shadow) !important;
+            backdrop-filter: blur(16px) saturate(125%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(125%) !important;
+        }
+
+        .glass-surface {
+            background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(245,248,252,0.72)) !important;
+            border: 1px solid rgba(205,215,229,0.68) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.55) !important;
+        }
+
+        #app > .glass:first-child {
+            position: relative;
+            overflow: hidden;
+            padding: 32px 36px !important;
+            background:
+                linear-gradient(105deg, rgba(8,22,42,0.9) 0%, rgba(18,44,75,0.72) 52%, rgba(25,62,98,0.45) 100%),
+                url('/static/premium-bg.png') right center / cover no-repeat !important;
+            border-color: rgba(218,183,102,0.34) !important;
+            box-shadow: var(--shadow-lg) !important;
+            color: #fff !important;
+        }
+
+        #app > .glass:first-child::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(90deg, rgba(201,147,40,0.34), transparent 32%),
+                linear-gradient(180deg, rgba(255,255,255,0.08), transparent 44%);
+            opacity: 0.72;
+        }
+
+        #app > .glass:first-child::after {
+            content: '';
+            position: absolute;
+            right: 28px;
+            bottom: 22px;
+            width: min(32vw, 360px);
+            height: 118px;
+            pointer-events: none;
+            opacity: 0.42;
+            background:
+                linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.54) 0 2px, transparent 2px 28px);
+            clip-path: polygon(0 72%, 8% 52%, 17% 64%, 27% 36%, 36% 50%, 47% 24%, 58% 46%, 70% 18%, 84% 38%, 100% 8%, 100% 100%, 0 100%);
+        }
+
+        #app > .glass:first-child .header-inner,
+        #app > .glass:first-child .header-inner > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-title {
+            color: #ffffff !important;
+            font-size: 34px !important;
+            line-height: 1.18 !important;
+            letter-spacing: 0 !important;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.24);
+        }
+
+        .header-title i {
+            width: 46px !important;
+            height: 46px !important;
+            color: #f5cf75 !important;
+            background: linear-gradient(135deg, rgba(245,207,117,0.28), rgba(255,255,255,0.12)) !important;
+            border: 1px solid rgba(245,207,117,0.38);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.22);
+        }
+
+        .header-desc {
+            color: rgba(239,246,255,0.84) !important;
+            max-width: 820px !important;
+            font-size: 15px !important;
+            line-height: 1.85 !important;
+        }
+
+        .header-desc a {
+            color: #f5cf75 !important;
+            border-bottom: 1px solid rgba(245,207,117,0.38);
+        }
+
+        .policy-link {
+            background: rgba(255,255,255,0.1) !important;
+            border-color: rgba(245,207,117,0.32) !important;
+            color: #f7d98d !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+        }
+
+        .policy-link:hover {
+            transform: translateY(-1px);
+            background: rgba(255,255,255,0.16) !important;
+        }
+
+        .tag {
+            border-radius: 999px !important;
+            letter-spacing: 0 !important;
+        }
+
+        .tag-blue {
+            background: rgba(31,111,235,0.1) !important;
+            color: #1f5fbf !important;
+            border-color: rgba(31,111,235,0.22) !important;
+        }
+
+        #app > .glass:first-child .tag-blue {
+            background: rgba(245,207,117,0.14) !important;
+            color: #ffe5a5 !important;
+            border-color: rgba(245,207,117,0.28) !important;
+        }
+
+        .main-grid {
+            grid-template-columns: 390px minmax(0, 1fr) !important;
+            gap: 24px !important;
+        }
+
+        .glass-card,
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before,
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), rgba(31,111,235,0.72), transparent);
+        }
+
+        .sec-title {
+            color: var(--primary) !important;
+            font-size: 15px !important;
+            letter-spacing: 0 !important;
+            border-bottom-color: rgba(210,219,232,0.78) !important;
+        }
+
+        .ico-wrap {
+            border-radius: 8px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 10px 24px rgba(15,35,68,0.08);
+        }
+
+        .ico-blue {
+            background: linear-gradient(135deg, rgba(31,111,235,0.12), rgba(201,147,40,0.1)) !important;
+            color: #1f6feb !important;
+        }
+
+        .ico-red {
+            background: linear-gradient(135deg, rgba(217,45,32,0.11), rgba(201,147,40,0.1)) !important;
+            color: #d92d20 !important;
+        }
+
+        .ico-gray {
+            background: linear-gradient(135deg, rgba(82,97,116,0.12), rgba(201,147,40,0.08)) !important;
+        }
+
+        .input-g {
+            background: rgba(255,255,255,0.96) !important;
+            border-color: rgba(188,201,219,0.9) !important;
+            border-radius: 8px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.86) !important;
+        }
+
+        .input-g:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 4px rgba(31,111,235,0.12), 0 10px 24px rgba(31,111,235,0.08) !important;
+        }
+
+        .btn-magnifier {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 8px !important;
+            background: linear-gradient(135deg, #173252, #1f6feb) !important;
+            color: #fff !important;
+            border-color: rgba(31,111,235,0.32) !important;
+            box-shadow: 0 14px 24px rgba(31,111,235,0.18) !important;
+        }
+
+        .btn-magnifier:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 30px rgba(31,111,235,0.24) !important;
+        }
+
+        .banner-danger,
+        .banner-safe {
+            border-left-width: 0 !important;
+            border-top: 3px solid currentColor !important;
+        }
+
+        .banner-danger {
+            color: var(--danger);
+            background: linear-gradient(135deg, rgba(255,255,255,0.94), rgba(255,247,246,0.9)) !important;
+        }
+
+        .banner-safe {
+            color: var(--success);
+            background: linear-gradient(135deg, rgba(255,255,255,0.94), rgba(240,253,248,0.9)) !important;
+        }
+
+        .stat-card {
+            padding: 22px 22px !important;
+            border-radius: 8px !important;
+        }
+
+        .stat-lbl {
+            color: #66758a !important;
+            letter-spacing: 0 !important;
+        }
+
+        .stat-val {
+            font-size: 29px !important;
+            color: #10213b;
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 18px;
+            max-width: 780px;
+        }
+
+        .hero-metric {
+            border: 1px solid rgba(245,207,117,0.24);
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 10px 12px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+        }
+
+        .hero-metric span {
+            display: block;
+            color: rgba(239,246,255,0.68);
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        .hero-metric strong {
+            color: #ffe4a3;
+            font-size: 16px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .decision-card {
+            position: relative;
+            overflow: hidden;
+            padding: 26px 28px !important;
+            align-items: flex-start !important;
+            gap: 18px !important;
+        }
+
+        .decision-card::after {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: -58px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,147,40,0.16), transparent 62%);
+            pointer-events: none;
+        }
+
+        .decision-card h2 {
+            font-size: 22px !important;
+            line-height: 1.35 !important;
+        }
+
+        .decision-card p {
+            font-size: 14.5px !important;
+        }
+
+        .decision-note {
+            margin-top: 12px !important;
+            padding: 13px 15px !important;
+            font-size: 13px !important;
+            line-height: 1.75 !important;
+        }
+
+        .decision-ledger {
+            margin-top: 12px !important;
+            padding: 14px 16px !important;
+            font-size: 13.5px !important;
+        }
+
+        .mobile-result-bar {
+            display: none;
+        }
+
+        .tbl thead th {
+            background: linear-gradient(180deg, rgba(244,247,251,0.98), rgba(235,241,248,0.92)) !important;
+            color: #526174 !important;
+            letter-spacing: 0 !important;
+        }
+
+        .tbl tbody tr:hover {
+            background: rgba(31,111,235,0.045) !important;
+        }
+
+        .modal-overlay {
+            background: rgba(5,12,24,0.66) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+        }
+
+        .modal-body {
+            border-radius: 8px !important;
+            box-shadow: 0 34px 80px rgba(5,12,24,0.34) !important;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background:
+                    linear-gradient(180deg, rgba(5,12,24,0.38) 0%, rgba(239,244,250,0.93) 56%),
+                    url('/static/premium-bg.png') center top / auto 520px no-repeat,
+                    #eef3f8 !important;
+            }
+
+            #app {
+                padding: 12px 10px 92px !important;
+                gap: 12px !important;
+            }
+
+            #app > .glass:first-child {
+                padding: 18px 16px !important;
+            }
+
+            #app > .glass:first-child::after {
+                width: 240px;
+                height: 70px;
+                right: 10px;
+                bottom: 8px;
+                opacity: 0.22;
+            }
+
+            .header-title {
+                font-size: 24px !important;
+                white-space: normal !important;
+                line-height: 1.25 !important;
+                gap: 8px !important;
+            }
+
+            .header-title i {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 22px !important;
+            }
+
+            .header-desc {
+                font-size: 12.5px !important;
+                line-height: 1.65 !important;
+                margin-top: 10px !important;
+            }
+
+            .hero-metrics {
+                grid-template-columns: 1fr 1fr !important;
+                max-width: none !important;
+                gap: 8px !important;
+                margin-top: 14px !important;
+            }
+
+            .hero-metric {
+                padding: 9px 10px !important;
+            }
+
+            .hero-metric:nth-child(3) {
+                grid-column: 1 / -1;
+            }
+
+            .hero-metric strong {
+                font-size: 15px !important;
+            }
+
+            .decision-card {
+                padding: 20px 16px !important;
+                gap: 12px !important;
+                align-items: center !important;
+            }
+
+            .decision-card > div:first-child {
+                width: 42px !important;
+                height: 42px !important;
+            }
+
+            .decision-card h2 {
+                font-size: 18px !important;
+            }
+
+            .decision-card p {
+                font-size: 13px !important;
+            }
+
+            .decision-note,
+            .decision-ledger {
+                padding: 11px 12px !important;
+                font-size: 12.5px !important;
+            }
+
+            .input-g {
+                min-height: 52px !important;
+                border-radius: 8px !important;
+            }
+
+            .btn-magnifier {
+                width: 52px !important;
+                height: 52px !important;
+                font-size: 18px !important;
+            }
+
+            .glass-card {
+                padding: 18px 16px !important;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .stat-card {
+                padding: 17px 16px !important;
+            }
+
+            .tbl {
+                min-width: 680px;
+            }
+
+            .modal-header {
+                align-items: flex-start !important;
+                gap: 10px !important;
+            }
+
+            .modal-header > div {
+                flex-wrap: wrap !important;
+                justify-content: flex-end !important;
+            }
+
+            .mobile-result-bar {
+                position: fixed;
+                left: 10px;
+                right: 10px;
+                bottom: 10px;
+                z-index: 900;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                padding: 10px 12px;
+                border-radius: 8px;
+                border: 1px solid rgba(214,222,233,0.78);
+                background: rgba(255,255,255,0.94);
+                box-shadow: 0 18px 48px rgba(5,12,24,0.22);
+                backdrop-filter: blur(14px) saturate(125%);
+                -webkit-backdrop-filter: blur(14px) saturate(125%);
+            }
+
+            .mobile-result-main {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                min-width: 0;
+            }
+
+            .mobile-result-icon {
+                width: 34px;
+                height: 34px;
+                border-radius: 8px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .mobile-result-title {
+                display: block;
+                font-size: 12px;
+                font-weight: 800;
+                line-height: 1.2;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .mobile-result-value {
+                display: block;
+                margin-top: 2px;
+                font-size: 13px;
+                font-weight: 800;
+                font-variant-numeric: tabular-nums;
+            }
+
+            .mobile-result-btn {
+                min-height: 36px;
+                padding: 0 12px;
+                border: 0;
+                border-radius: 8px;
+                background: linear-gradient(135deg, #173252, #1f6feb);
+                color: #fff;
+                font-size: 12px;
+                font-weight: 800;
+                white-space: nowrap;
+                box-shadow: 0 12px 24px rgba(31,111,235,0.2);
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .stat-val {
+                font-size: 23px !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -378,6 +953,20 @@
                         <i class="fa-solid fa-file-lines" style="font-size:12px;"></i> 30号文·浮动管理办法
                         <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9px;opacity:0.6;"></i>
                     </a>
+                </div>
+                <div class="hero-metrics">
+                    <div class="hero-metric">
+                        <span>当前年缴保费</span>
+                        <strong>{{ currency(currentData.currentAnnualPremium) }}</strong>
+                    </div>
+                    <div class="hero-metric">
+                        <span>支缴率测算</span>
+                        <strong>{{ pct(currentData.zhiJiaoLv) }}</strong>
+                    </div>
+                    <div class="hero-metric">
+                        <span>三年净变化</span>
+                        <strong>{{ currentData.recommendPrivate ? '-' : '+' }}{{ currency(Math.abs(safePayout - currentData.totalExtraPremium)) }}</strong>
+                    </div>
                 </div>
             </div>
             <div class="tag tag-blue" style="padding:5px 13px;white-space:nowrap;">
@@ -471,7 +1060,7 @@
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
 
             <!-- Decision Banner -->
-            <div :class="['glass banner-inner', currentData.recommendPrivate ? 'banner-danger' : 'banner-safe']"
+            <div :class="['glass banner-inner decision-card', currentData.recommendPrivate ? 'banner-danger' : 'banner-safe']"
                  style="padding:20px 24px;display:flex;align-items:center;gap:16px;">
                 <div style="flex-shrink:0;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;"
                      :style="currentData.recommendPrivate ? 'background:rgba(220,38,38,0.07);color:#dc2626;' : 'background:rgba(5,150,105,0.07);color:#059669;'">
@@ -488,11 +1077,15 @@
                         <strong :style="{color: currentData.recommendPrivate ? '#dc2626' : 'var(--text)'}">
                             {{ currency(currentData.totalExtraPremium) }}</strong>。
                     </p>
-                    <div class="glass-surface" style="margin-top:9px;padding:10px 13px;font-size:12.5px;color:var(--text-2);line-height:1.6;">
-                        <strong style="color:var(--text);">为什么会产生"多缴成本"？</strong><br/>
-                        工伤理赔导致"支缴率"上升。一次报销不仅在第1年面临惩罚性费率，还会让第2、3年经历漫长的费率恢复期。
+                    <div v-if="currentData.recommendPrivate" class="glass-surface decision-note" style="margin-top:9px;padding:10px 13px;font-size:12.5px;color:var(--text-2);line-height:1.6;">
+                        <strong style="color:var(--text);">为什么建议内部解决？</strong><br/>
+                        本次报销会明显推高支缴率，并清零已有的下浮优惠。未来三年增加的保费高于本次可报销金额，账面上会形成净亏损。
                     </div>
-                    <div v-if="currentData.recommendPrivate" class="glass-surface" style="margin-top:9px;padding:12px 14px;font-size:13px;color:var(--text);line-height:1.9;">
+                    <div v-else class="glass-surface decision-note" style="margin-top:9px;padding:10px 13px;font-size:12.5px;color:var(--text-2);line-height:1.6;">
+                        <strong style="color:var(--text);">为什么建议正常报销？</strong><br/>
+                        本次报销带来的费率影响低于可报销金额。即使后续费率阶段性恢复，三年综合测算后仍然是走工伤报销更划算。
+                    </div>
+                    <div v-if="currentData.recommendPrivate" class="glass-surface decision-ledger" style="margin-top:9px;padding:12px 14px;font-size:13px;color:var(--text);line-height:1.9;">
                         <div style="display:flex;justify-content:space-between;border-bottom:1px dashed rgba(203,213,225,0.5);padding-bottom:6px;margin-bottom:6px;">
                             <span>社保报销收入</span><span style="font-weight:600;color:#059669;">+{{ currency(safePayout) }}</span>
                         </div>
@@ -504,7 +1097,7 @@
                             <span style="font-weight:700;font-size:15px;color:#dc2626;">-{{ currency(currentData.totalExtraPremium - safePayout) }}</span>
                         </div>
                     </div>
-                    <div v-else class="glass-surface" style="margin-top:9px;padding:12px 14px;font-size:13px;color:var(--text);line-height:1.9;">
+                    <div v-else class="glass-surface decision-ledger" style="margin-top:9px;padding:12px 14px;font-size:13px;color:var(--text);line-height:1.9;">
                         <div style="display:flex;justify-content:space-between;border-bottom:1px dashed rgba(203,213,225,0.5);padding-bottom:6px;margin-bottom:6px;">
                             <span>社保报销收入</span><span style="font-weight:600;color:#059669;">+{{ currency(safePayout) }}</span>
                         </div>
@@ -671,6 +1264,26 @@
                 </p>
             </div>
         </div>
+    </div>
+
+    <div class="mobile-result-bar">
+        <div class="mobile-result-main">
+            <span class="mobile-result-icon"
+                  :style="currentData.recommendPrivate ? 'background:rgba(220,38,38,0.09);color:#dc2626;' : 'background:rgba(5,150,105,0.09);color:#059669;'">
+                <i v-if="currentData.recommendPrivate" class="fa-solid fa-triangle-exclamation"></i>
+                <i v-else class="fa-solid fa-shield-halved"></i>
+            </span>
+            <span style="min-width:0;">
+                <span class="mobile-result-title">{{ currentData.recommendPrivate ? '建议内部解决' : '建议正常报销' }}</span>
+                <span class="mobile-result-value"
+                      :style="{color: currentData.recommendPrivate ? '#dc2626' : '#059669'}">
+                    {{ currentData.recommendPrivate ? '-' : '+' }}{{ currency(Math.abs(safePayout - currentData.totalExtraPremium)) }}
+                </span>
+            </span>
+        </div>
+        <button class="mobile-result-btn" type="button" onclick="document.querySelector('.decision-card')?.scrollIntoView({behavior:'smooth', block:'start'})">
+            查看建议
+        </button>
     </div>
 
     <!-- ═══════════════ MODAL: Industry Classification ═══════════════ -->
